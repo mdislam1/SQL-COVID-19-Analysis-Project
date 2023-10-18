@@ -5,13 +5,13 @@ This SQL project focuses on analyzing COVID-19 data, specifically exploring infe
 ## Analysis Steps:
 
 1. Initial Data Selection:
- * Selects essential data fields such as location, date, total cases, new cases, total deaths, and population from the CovidDeaths table.
+  * Selects essential data fields such as location, date, total cases, new cases, total deaths, and population from the CovidDeaths table.
 
 2. Total Cases vs Total Deaths:
- * Calculates the death percentage based on the total number of cases, providing insights into the likelihood of dying if contracting COVID-19 in a specific country.
+  * Calculates the death percentage based on the total number of cases, providing insights into the likelihood of dying if contracting COVID-19 in a specific country.
 
 3. Total Cases vs Population:
- * Computes the percentage of the population infected with COVID-19, highlighting the impact of the virus on different regions.
+  * Computes the percentage of the population infected with COVID-19, highlighting the impact of the virus on different regions.
 
 4. Countries with Highest Infection Rate:
  * Identifies countries with the highest infection rates compared to their population, showcasing the severity of the outbreak in specific regions.
