@@ -1,1 +1,43 @@
 # SQL-COVID-19-Analysis-Project
+
+This SQL project focuses on analyzing COVID-19 data, specifically exploring infection rates, death rates, and vaccination progress across different countries and continents. The analysis involves the use of various SQL queries, including calculations, joins, and window functions. The goal is to gain insights into the impact of the pandemic on different regions and assess vaccination efforts.
+
+## Analysis Steps:
+
+1. Initial Data Selection:
+  * Selects essential data fields such as location, date, total cases, new cases, total deaths, and population from the CovidDeaths table.
+    Total Cases vs Total Deaths:
+
+Calculates the death percentage based on the total number of cases, providing insights into the likelihood of dying if contracting COVID-19 in a specific country.
+Total Cases vs Population:
+
+Computes the percentage of the population infected with COVID-19, highlighting the impact of the virus on different regions.
+Countries with Highest Infection Rate:
+
+Identifies countries with the highest infection rates compared to their population, showcasing the severity of the outbreak in specific regions.
+Countries with Highest Death Count per Population:
+
+Lists countries with the highest death count per population, offering insights into the impact of the virus on mortality rates.
+Continents with the Highest Death Count per Population:
+
+Analyzes continents to determine which ones have the highest death count per population, providing a broader perspective on the global impact.
+Total Population vs Vaccinations:
+
+Combines data from the CovidDeaths and CovidVaccinations tables to analyze the percentage of the population that has received at least one COVID-19 vaccine dose.
+Using CTE for Vaccination Analysis:
+
+Utilizes a Common Table Expression (CTE) to perform calculations on the partitioned data, offering a structured and readable way to analyze vaccination progress.
+Using Temp Table for Vaccination Analysis:
+
+Demonstrates an alternative approach using a temporary table to perform calculations on vaccination data.
+Creating a View for Visualization:
+
+Establishes a view, named PercentPopulationVaccinated, to store relevant data for later visualization and reporting.
+Viewing the Stored Data:
+
+Retrieves data from the created view for further exploration or visualization.
+
+## Note:
+
+  * The analysis covers a range of factors, from infection and death rates to vaccination progress.
+  * The SQL project is designed to facilitate data-driven decision-making and gain insights into the global impact of the COVID-19 pandemic.
