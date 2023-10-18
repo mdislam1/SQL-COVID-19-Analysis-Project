@@ -4,10 +4,14 @@ This SQL project focuses on analyzing COVID-19 data, specifically exploring infe
 
 ## Analysis Steps:
 
-1. Initial Data Selection:
-  i. Selects essential data fields such as location, date, total cases, new cases, total deaths, and population from the CovidDeaths table.
+3. Third item
+    1. Indented item
+    2. Indented item
 
-3. Total Cases vs Total Deaths:
+1. Initial Data Selection:
+Selects essential data fields such as location, date, total cases, new cases, total deaths, and population from the CovidDeaths table.
+
+2. Total Cases vs Total Deaths:
   * Calculates the death percentage based on the total number of cases, providing insights into the likelihood of dying if contracting COVID-19 in a specific country.
 
 3. Total Cases vs Population:
