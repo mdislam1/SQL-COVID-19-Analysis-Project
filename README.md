@@ -20,7 +20,7 @@ The output of the project provides valuable insights into the global pandemic’
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/yourusername/covid-19-data-analysis.git
-   cd covid-19-data-analysis
+   cd covid-19-data_analysis_and_insights
    ```
 
 2. **Set Up SQLite Database:**
