@@ -1,3 +1,28 @@
+/*
+Covid-19 Data Analysis and Insights
+
+This project focuses on analyzing Covid-19 data across various regions 
+to understand the global impact of the virus, including case numbers, 
+deaths, and vaccination coverage. The analysis utilizes two key datasets, 
+CovidDeaths and CovidVaccinations, loaded from Excel files into an SQLite 
+database. The project calculates key metrics such as death percentages, 
+the proportion of the population infected, and countries with the highest 
+infection and mortality rates. It also tracks vaccination progress by 
+calculating the percentage of the population vaccinated over time using
+rolling counts, employing advanced SQL techniques like window functions, 
+CTEs, and temporary tables for efficient data manipulation.
+
+The output of the project provides valuable insights into the global 
+pandemic’s impact and the effectiveness of vaccination campaigns. 
+It includes data on Covid-19 case and death numbers, as well as 
+vaccination coverage by country and continent. Advanced queries and 
+optimizations ensure that the data is processed efficiently, even with
+large datasets. The final result is a structured and optimized SQL setup 
+that enables easy visualization of Covid-19 trends and supports 
+data-driven decisions in public health responses.
+
+*/
+
 
 -- 1. Data Quality Check: Ensure no NULL values in critical columns
 SELECT * FROM CovidDeaths WHERE total_cases IS NULL OR total_deaths IS NULL;
