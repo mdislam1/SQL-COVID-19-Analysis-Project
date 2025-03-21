@@ -1,0 +1,57 @@
+# .gitignore for COVID-19 Data Analysis Project
+
+# Ignore SQLite database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Ignore Excel files (if raw data is stored locally)
+*.xlsx
+*.xls
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+*.iml
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Python virtual environments
+venv/
+env/
+*.env
+
+# Ignore log files
+*.log
+
+# Ignore compiled files
+*.pyc
+__pycache__/
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore output files (e.g., CSV, JSON, or other exported data)
+*.csv
+*.json
+*.txt
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore local configuration files
+config.ini
+secrets.*
+*.env
+
+# Ignore large datasets (if stored locally)
+data/
+datasets/
+
+# Ignore build and distribution directories
+build/
+dist/
+*.egg-info/
