@@ -1,192 +1,181 @@
--- Select Data that we are going to be starting with
 
+-- 1. Data Quality Check: Ensure no NULL values in critical columns
+SELECT * FROM CovidDeaths WHERE total_cases IS NULL OR total_deaths IS NULL;
+SELECT * FROM CovidVaccinations WHERE new_vaccinations IS NULL;
+
+-- 2. Create necessary indices for better performance
+CREATE INDEX IF NOT EXISTS idx_location_date ON CovidDeaths(location, date);
+CREATE INDEX IF NOT EXISTS idx_vaccination_location_date ON CovidVaccinations(location, date);
+
+-- 3. Selecting the initial data
 SELECT 
-	location, 
-	date,
-	total_cases,
-	new_cases,
-	total_deaths,
-	population
+    location, 
+    date,
+    total_cases,
+    new_cases,
+    total_deaths,
+    population
 FROM CovidDeaths
-ORDER BY 1,2
+ORDER BY location, date;
 
-
--- Total Cases vs Total Deaths
--- Shows likelihood of dying if you contract covid in your country
-
+-- 4. Total Cases vs Total Deaths: Likelihood of death from COVID-19
 SELECT 
-	location, 
-	date,
-	total_cases,
-	total_deaths,
-	(total_deaths / total_cases) * 100 AS DeathPercentage
+    location, 
+    date,
+    total_cases,
+    total_deaths,
+    ROUND((COALESCE(total_deaths, 0) / COALESCE(total_cases, 1)) * 100, 2) AS DeathPercentage
 FROM CovidDeaths
-ORDER BY 1,2
+ORDER BY location, date;
 
-
--- Total Cases vs Population
--- Shows what percentage of population infected with Covid
-
+-- 5. Total Cases vs Population: Percentage of population infected with Covid
 SELECT 
-	location, 
-	date,
-	population,
-	total_cases,
-	(total_cases / population) * 100 AS	PercentPopulationInfected
+    location, 
+    date,
+    population,
+    total_cases,
+    ROUND((COALESCE(total_cases, 0) / COALESCE(population, 1)) * 100, 2) AS PercentPopulationInfected
 FROM CovidDeaths
-ORDER BY 1,2
+ORDER BY location, date;
 
-
--- Countries with Highest Infection Rate compared to Population
-
+-- 6. Countries with Highest Infection Rate compared to Population
 SELECT 
-	location, 
-	population,
-	MAX(total_cases) AS HighestInfectionCount,
-	MAX((total_cases / population)) * 100 AS PercentPopulationInfected
+    location, 
+    population,
+    MAX(total_cases) AS HighestInfectionCount,
+    MAX((COALESCE(total_cases, 0) / COALESCE(population, 1))) * 100 AS PercentPopulationInfected
 FROM CovidDeaths
 GROUP BY location, population
-ORDER BY PercentPopulationInfected DESC
+ORDER BY PercentPopulationInfected DESC;
 
-
--- Countries with Highest Death Count per Population
-
+-- 7. Countries with Highest Death Count per Population
 SELECT 
-	location, 
-	MAX(total_deaths) AS TotalDeathCount
+    location, 
+    MAX(total_deaths) AS TotalDeathCount
 FROM CovidDeaths
 WHERE continent IS NOT NULL
 GROUP BY location
-ORDER BY TotalDeathCount DESC
+ORDER BY TotalDeathCount DESC;
 
-
--- Showing contintents with the highest death count per population
-
+-- 8. Continents with the Highest Death Count per Population
 SELECT 
-	continent, 
-	MAX(total_deaths) AS TotalDeathCount
+    continent, 
+    MAX(total_deaths) AS TotalDeathCount
 FROM CovidDeaths
 WHERE continent IS NOT NULL
 GROUP BY continent
-ORDER BY TotalDeathCount DESC
+ORDER BY TotalDeathCount DESC;
 
-
--- Total Population vs Vaccinations
--- Shows Percentage of Population that has recieved at least one Covid Vaccine
-
+-- 9. Total Population vs Vaccinations: Percentage of population vaccinated
 SELECT 
-	D.continent,
-	D.location,
-	D.date,
-	D.population,
-	V.new_vaccinations,
-	SUM(V.new_vaccinations) OVER(PARTITION BY D.location ORDER BY D.location, D.date) as RollingPeopleVaccinated
+    D.continent,
+    D.location,
+    D.date,
+    D.population,
+    V.new_vaccinations,
+    SUM(V.new_vaccinations) OVER(PARTITION BY D.location ORDER BY D.location, D.date) AS RollingPeopleVaccinated
 FROM CovidDeaths D
-INNER JOIN CovidVaccinations V 
-ON D.location = V.location 
-and D.date = V.date
+INNER JOIN CovidVaccinations V ON D.location = V.location AND D.date = V.date
 WHERE D.continent IS NOT NULL
-ORDER BY 2,3
+ORDER BY D.location, D.date;
 
-
--- Using CTE to perform Calculation on Partition By in previous query
-
-WITH PopVsVac (Continent, Location, Date, Population, New_Vaccinations, RollingPeopleVaccinated)
-AS 
-(
-	SELECT 
-		D.continent,
-		D.location,
-		D.date,
-		D.population,
-		V.new_vaccinations,
-		SUM(V.new_vaccinations) OVER(PARTITION BY D.location ORDER BY D.location, D.date) as RollingPeopleVaccinated
-	FROM CovidDeaths D
-	INNER JOIN CovidVaccinations V 
-	ON D.location = V.location 
-	and D.date = V.date
-	WHERE D.continent IS NOT NULL
+-- 10. CTE for Vaccination Data and Rolling Vaccinations
+WITH RollingVaccinationData AS (
+    SELECT
+        D.continent,
+        D.location,
+        D.date,
+        D.population,
+        V.new_vaccinations,
+        SUM(V.new_vaccinations) OVER(PARTITION BY D.location ORDER BY D.date) AS RollingPeopleVaccinated
+    FROM CovidDeaths D
+    INNER JOIN CovidVaccinations V ON D.location = V.location AND D.date = V.date
 )
+SELECT *, ROUND((RollingPeopleVaccinated / Population) * 100, 2) AS VaccinationCoveragePercentage
+FROM RollingVaccinationData;
+
+-- 11. Temp Table to Calculate Rolling Vaccinations and Population Percentage
+DROP TABLE IF EXISTS #TempCovidAnalysis;
+CREATE TABLE #TempCovidAnalysis (
+    Continent NVARCHAR(255),
+    Location NVARCHAR(255),
+    Date DATETIME,
+    Population INT,
+    TotalCases INT,
+    TotalDeaths INT,
+    Vaccinations INT
+);
+
+INSERT INTO #TempCovidAnalysis
+SELECT
+    D.continent,
+    D.location,
+    D.date,
+    D.population,
+    V.new_vaccinations,
+    SUM(V.new_vaccinations) OVER(PARTITION BY D.location ORDER BY D.date) AS RollingPeopleVaccinated
+FROM CovidDeaths D
+INNER JOIN CovidVaccinations V ON D.location = V.location AND D.date = V.date;
 
 SELECT 
-	*, (RollingPeopleVaccinated / Population) * 100
-FROM PopVsVac
+    *, ROUND((RollingPeopleVaccinated / Population) * 100, 2) AS PercentPopulationVaccinated
+FROM #TempCovidAnalysis;
 
-
--- Using Temp Table to perform Calculation on Partition By in previous query
-
-DROP TABLE IF EXISTS #PercentPopulationVaccinated
-CREATE TABLE #PercentPopulationVaccinated
-(
-	Continent nvarchar(255),
-	Location nvarchar(255),
-	Date datetime,
-	Population numeric,
-	New_vaccinations numeric,
-	RollingPeopleVaccinated numeric
-)
-
-Insert into #PercentPopulationVaccinated
-SELECT 
-		D.continent,
-		D.location,
-		D.date,
-		D.population,
-		V.new_vaccinations,
-		SUM(V.new_vaccinations) OVER(PARTITION BY D.location ORDER BY D.location, D.date) as RollingPeopleVaccinated
-	FROM CovidDeaths D
-	INNER JOIN CovidVaccinations V 
-	ON D.location = V.location 
-
-Select *, (RollingPeopleVaccinated/Population)*100
-From #PercentPopulationVaccinated
-
-
-
-
--- Creating View to store data for later visualizations
-
+-- 12. Create View for Vaccination Coverage Data
 CREATE VIEW PercentPopulationVaccinated AS
 SELECT 
-		D.continent,
-		D.location,
-		D.date,
-		D.population,
-		V.new_vaccinations,
-		SUM(V.new_vaccinations) OVER(PARTITION BY D.location ORDER BY D.location, D.date) as RollingPeopleVaccinated
-	FROM CovidDeaths D
-	INNER JOIN CovidVaccinations V 
-	ON D.location = V.location 
+    D.continent,
+    D.location,
+    D.date,
+    D.population,
+    V.new_vaccinations,
+    SUM(V.new_vaccinations) OVER(PARTITION BY D.location ORDER BY D.date) AS RollingPeopleVaccinated
+FROM CovidDeaths D
+INNER JOIN CovidVaccinations V ON D.location = V.location AND D.date = V.date;
 
+-- 13. Query from View for future visualizations
+SELECT * FROM PercentPopulationVaccinated;
 
-SELECT * FROM PercentPopulationVaccinated
+-- 14. Perform a Moving Average Calculation for Total Cases over the last 7 days
+SELECT 
+    location,
+    date,
+    total_cases,
+    total_deaths,
+    AVG(total_cases) OVER (PARTITION BY location ORDER BY date ROWS BETWEEN 7 PRECEDING AND CURRENT ROW) AS MovingAvgTotalCases
+FROM CovidDeaths;
 
+-- 15. Refactor and Optimize: Using DISTINCT for unique values
+SELECT DISTINCT location FROM CovidDeaths;
 
+-- 16. Handle Time Zones and Date Format for Consistency
+SELECT
+    location,
+    DATE(date, 'UTC') AS date_utc,
+    total_cases
+FROM CovidDeaths;
 
+-- 17. Data Completeness: Check for missing values and outliers
+SELECT 
+    location, 
+    COUNT(*) AS total_records,
+    SUM(CASE WHEN total_cases IS NULL THEN 1 ELSE 0 END) AS missing_total_cases
+FROM CovidDeaths
+GROUP BY location;
 
+-- 18. Aggregating Data for Summarized View: Total Cases and Deaths by Location
+SELECT
+    location,
+    SUM(total_cases) AS total_cases_sum,
+    SUM(total_deaths) AS total_deaths_sum
+FROM CovidDeaths
+GROUP BY location;
 
+-- 19. Index Optimization for Faster Access on Large Datasets
+CREATE INDEX IF NOT EXISTS idx_location_population ON CovidDeaths(location, population);
+CREATE INDEX IF NOT EXISTS idx_vaccination_date ON CovidVaccinations(date);
 
+-- 20. Performance Testing: Use EXPLAIN for Query Optimization
+EXPLAIN SELECT * FROM CovidDeaths WHERE total_cases > 10000;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- END OF SQL SCRIPT
