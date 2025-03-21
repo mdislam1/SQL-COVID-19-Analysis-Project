@@ -122,12 +122,8 @@ Contributions are welcome! Please follow these steps:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
 ## Author
 Md Islam  
 GitHub: https://github.com/mdislam1
-
----
 
 By following this README, you should be able to set up and run the COVID-19 data analysis project successfully. If you encounter any issues, please feel free to open an issue on the GitHub repository.
