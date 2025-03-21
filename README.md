@@ -40,69 +40,22 @@ The output of the project provides valuable insights into the global pandemic’
 2. **Execute the Scripts:**
    - You can run the entire script at once or execute individual queries to perform specific analyses.
 
-## Data Analysis
+### Data Analysis
 
-The SQL scripts provided perform the following analyses:
+The SQL scripts perform a comprehensive analysis of COVID-19 data, including:
 
-1. **Data Quality Check:**
-   - Ensure no NULL values in critical columns.
+1. **Data Quality Check**: Ensure no NULL values in critical columns.
+2. **Index Creation**: Optimize database performance with necessary indices.
+3. **Initial Data Selection**: Extract key data for analysis.
+4. **Total Cases vs Total Deaths**: Calculate the likelihood of death from COVID-19.
+5. **Total Cases vs Population**: Determine the percentage of the population infected.
+6. **Infection and Death Rates**: Identify countries and continents with the highest infection and death rates.
+7. **Vaccination Progress**: Track vaccination coverage using rolling counts and population percentages.
+8. **Advanced Techniques**: Utilize CTEs, temporary tables, and views for efficient data manipulation.
+9. **Data Optimization**: Refactor queries, handle time zones, and ensure data completeness.
+10. **Performance Testing**: Use EXPLAIN for query optimization and index tuning.
 
-2. **Index Creation:**
-   - Create necessary indices for better performance.
-
-3. **Initial Data Selection:**
-   - Select initial data for analysis.
-
-4. **Total Cases vs Total Deaths:**
-   - Calculate the likelihood of death from COVID-19.
-
-5. **Total Cases vs Population:**
-   - Calculate the percentage of the population infected with COVID-19.
-
-6. **Countries with Highest Infection Rate:**
-   - Identify countries with the highest infection rate compared to their population.
-
-7. **Countries with Highest Death Count:**
-   - Identify countries with the highest death count per population.
-
-8. **Continents with Highest Death Count:**
-   - Identify continents with the highest death count per population.
-
-9. **Total Population vs Vaccinations:**
-   - Calculate the percentage of the population vaccinated.
-
-10. **CTE for Vaccination Data:**
-    - Use Common Table Expressions (CTEs) for rolling vaccination data.
-
-11. **Temp Table for Rolling Vaccinations:**
-    - Use temporary tables to calculate rolling vaccinations and population percentage.
-
-12. **Create View for Vaccination Coverage:**
-    - Create a view for vaccination coverage data.
-
-13. **Query from View:**
-    - Query from the created view for future visualizations.
-
-14. **Moving Average Calculation:**
-    - Calculate the moving average of total cases over the last 7 days.
-
-15. **Refactor and Optimize:**
-    - Use DISTINCT for unique values.
-
-16. **Handle Time Zones and Date Format:**
-    - Ensure consistency in time zones and date formats.
-
-17. **Data Completeness:**
-    - Check for missing values and outliers.
-
-18. **Aggregating Data:**
-    - Summarize total cases and deaths by location.
-
-19. **Index Optimization:**
-    - Optimize indices for faster access on large datasets.
-
-20. **Performance Testing:**
-    - Use EXPLAIN for query optimization.
+This analysis provides insights into the global impact of COVID-19, vaccination effectiveness, and supports data-driven public health decisions.
 
 ## SQL Scripts
 
